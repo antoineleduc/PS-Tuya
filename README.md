@@ -8,24 +8,14 @@ Get the access token valid for 2 hours using
 <br>`Get-TuyaToken -clientid "[clientid_from_tuya_dev_portal]" -secret "[secret_from_tuya_dev_portal]"`
 
 You can verify the status of the device using 
-
-```powershell
-    Get-TuyaStatus -deviceid "[deviceid_from_app_settings]"
-```
+<br>`Get-TuyaStatus -deviceid "[deviceid_from_app_settings]"`
 
 Get the supported commands for your device using 
-
-```powershell
-    Get-TuyaCommands -deviceid "[deviceid_from_app_settings]"
-```
+<br>`Get-TuyaCommands -deviceid "[deviceid_from_app_settings]"`
 
 Exemple of a command to send: 
-
-```powershell
-    Send-TuyaCommand -deviceid "[deviceid_from_app_settings]" -code "bright_value_1" -value "1000"
-```
-
-<br><b>ENJOY!</b>
+<br>`Send-TuyaCommand -deviceid "[deviceid_from_app_settings]" -code "bright_value_1" -value "1000"`
+<b>ENJOY!</b>
 <br>
 
 ```powershell
