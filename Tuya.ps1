@@ -119,9 +119,3 @@ function Get-TuyaCommands{
     $response.result.functions | format-table code,type,values
 
 }
-
-
-Get-TuyaToken -clientid "9ncx5yg8a8wfoknaccig" -secret "a6f6d87a741745769b02a13e91fe5f6d"
-Get-TuyaStatus -deviceid "036282088caab5ff088f"
-Send-TuyaCommand -deviceid "036282088caab5ff088f" -code "bright_value_1" -value "1000"
-Get-TuyaCommands -deviceid "036282088caab5ff088f"
