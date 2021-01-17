@@ -5,10 +5,7 @@ I decided to include my PowerShell code for Woods Wion (Eco-Plugs) smart outlet 
 <br>
 ## What you will need:
 Get the access token valid for 2 hours using 
-
-```powershell
-    Get-TuyaToken -clientid "[clientid_from_tuya_dev_portal]" -secret "[secret_from_tuya_dev_portal]"
-```
+<br>`Get-TuyaToken -clientid "[clientid_from_tuya_dev_portal]" -secret "[secret_from_tuya_dev_portal]"`
 
 You can verify the status of the device using 
 
