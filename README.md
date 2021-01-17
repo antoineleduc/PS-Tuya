@@ -15,7 +15,7 @@ Get the supported commands for your device using
 
 Exemple of a command to send: 
 <br>`Send-TuyaCommand -deviceid "[deviceid_from_app_settings]" -code "bright_value_1" -value "1000"`
-<b>ENJOY!</b>
+<br><b>ENJOY!</b>
 <br>
 
 ```powershell
