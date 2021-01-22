@@ -1,4 +1,4 @@
-﻿function Get-TuyaToken{
+function Get-TuyaToken{
 
     Param(
         [parameter(Mandatory)]
@@ -50,6 +50,8 @@
     Write-Host $accesstoken`n
     }
 
+
+
 function Get-TuyaStatus{
      Param(
         [parameter(Mandatory=$false)]
@@ -77,6 +79,26 @@ function Get-TuyaStatus{
     Write-Host "Curent Status: $ONStatus $BrightStatus%`n"
     }
 
+function Get-TuyaCommands{
+    
+    Param(
+        [parameter(Mandatory=$false)]
+        [string]$clientid = $clientid,
+        [parameter(Mandatory=$false)]
+        [string]$secret = $secret,
+        [parameter(Mandatory=$false)]
+        [string]$sign_method = "HMAC-SHA256",
+        [parameter(Mandatory)]
+        [string]$deviceid
+    )
+
+    $TuyaURL = 'https://openapi.tuyaus.com/v1.0/devices/'+$deviceid+'/functions'
+    $response = Invoke-RestMethod $TuyaURL -Method 'GET' -Headers $headers
+    $response | ConvertTo-Json
+    $response.result.functions | format-table code,type,values
+
+}
+
 function Send-TuyaCommand{
     
     Param(
@@ -94,12 +116,48 @@ function Send-TuyaCommand{
         [string]$value
     )
 
+    clear
+    Write-Host "Sending command $code with value of $value`n"
+
     $TuyaURL = 'https://openapi.tuyaus.com/v1.0/devices/'+$deviceid+'/commands'
     $body = "{`n	`"commands`":[`n		{`n			`"code`": `"$code`",`n			`"value`":$value`n		}`n	]`n}"
     $response = Invoke-RestMethod $TuyaURL -Method 'POST' -Headers $headers -Body $body
 }
 
-function Get-TuyaCommands{
+
+# Tuya IR Remote Control #
+##
+## 1. PS > Get-TuyaToken
+##
+## 2. PS > Get-TuyaIRRemotes
+##    **Find the remote_id of the device you programmed previously in the app (must be linked to your tuyaAPI project)
+##
+## 3. PS > Get-TuyaIRCodes
+##    **Copy the code which corresponds to the command you wish to press
+##
+## 4. PS > Send-TuyaIRCode
+##    **Paste the code of the button you wish to send
+
+function Get-TuyaIRRemotes{
+     Param(
+        [parameter(Mandatory=$false)]
+        [string]$clientid = $clientid,
+        [parameter(Mandatory=$false)]
+        [string]$secret = $secret,
+        [parameter(Mandatory=$false)]
+        [string]$sign_method = "HMAC-SHA256",
+        [parameter(Mandatory)]
+        [string]$infraredid
+    )
+
+    $TuyaURL = 'https://openapi.tuyaus.com/v1.0/infrareds/'+$infraredid+'/remotes'
+    $response = Invoke-RestMethod $TuyaURL -Method 'GET' -Headers $headers
+    $response | ConvertTo-Json
+    clear
+    $response.result | format-list remote_name,remode_id,remote_index,area_id,brand_id,category_id,iptv_type,operator_id
+    }
+
+function Get-TuyaIRCodes{
     
     Param(
         [parameter(Mandatory=$false)]
@@ -109,13 +167,40 @@ function Get-TuyaCommands{
         [parameter(Mandatory=$false)]
         [string]$sign_method = "HMAC-SHA256",
         [parameter(Mandatory)]
-        [string]$deviceid
+        [string]$infraredid,
+        [parameter(Mandatory)]
+        [string]$remoteid
     )
 
-    $TuyaURL = 'https://openapi.tuyaus.com/v1.0/devices/'+$deviceid+'/functions'
+    $TuyaURL = 'https://openapi.tuyaus.com/v1.0/infrareds/'+$infraredid+'/remotes/'+$remoteid+'/learning-codes'
     $response = Invoke-RestMethod $TuyaURL -Method 'GET' -Headers $headers
     $response | ConvertTo-Json
     clear
-    $response.result.functions | format-table code,type,values
+    $response.result | format-list key_name,code
+
+}
+
+function Send-TuyaIRCode{
+    
+ Param(
+        [parameter(Mandatory=$false)]
+        [string]$clientid = $clientid,
+        [parameter(Mandatory=$false)]
+        [string]$secret = $secret,
+        [parameter(Mandatory=$false)]
+        [string]$sign_method = "HMAC-SHA256",
+        [parameter(Mandatory)]
+        [string]$infraredid,
+        [parameter(Mandatory)]
+        [string]$remoteid,
+        [parameter(Mandatory)]
+        [string]$code
+    )
+
+    $headers.Add("code", $code)
+
+    $TuyaURL = 'https://openapi.tuyaus.com/v1.0/infrareds/'+$infraredid+'/remotes/'+$remoteid+'/learning-codes'
+    $response = Invoke-RestMethod $TuyaURL -Method 'POST' -Headers $headers
+    $response | ConvertTo-Json
 
 }
